@@ -28,6 +28,8 @@ module "frontend" {
 
   network_name = module.network.network_name
   key_name = var.key_name
+
+  region = var.region
 }
 
 

@@ -27,6 +27,32 @@ module "instances-frontend" {
   
 }
 
+resource "google_compute_instance_group" "eu-ig1" {
+  name = "eu-ig1"
+
+  instances = module.instances-frontend.self_link
+
+  zone = var.zones[0]
+}
+
+resource "google_compute_health_check" "my-tcp-health-check" {
+  name = "my-tcp-health-check"
+
+  tcp_health_check {
+    port = "8080"
+  }
+}
+
+resource "google_compute_region_backend_service" "my-ext-lb" {
+  name          = "my-ext-lb"
+  health_checks = [google_compute_health_check.my-tcp-health-check.self_link]
+  region        = var.region
+
+  backend {
+    group = google_compute_instance_group.eu-ig1.self_link
+  }
+}
+
 /*
 module "elb_http" {
   source = "terraform-aws-modules/elb/aws"
