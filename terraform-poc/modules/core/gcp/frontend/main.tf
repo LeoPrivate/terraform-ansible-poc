@@ -30,7 +30,7 @@ module "instances-frontend" {
 resource "google_compute_instance_group" "eu-ig1" {
   name = "eu-ig1"
 
-  instances = module.instances-frontend.self_link
+  instances = module.instances-frontend.self_links
 
   zone = var.zones[0]
 }

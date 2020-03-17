@@ -5,3 +5,7 @@ output instances_ids {
 output instances_ips {
   value = google_compute_instance.frontend.*.network_interface.0.network_ip
 }
+
+output self_links {
+  value = google_compute_instance.frontend.*.self_link
+}
