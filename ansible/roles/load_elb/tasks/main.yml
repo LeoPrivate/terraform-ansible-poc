@@ -1,0 +1,15 @@
+---
+- action:
+    module: ec2_elb_info
+    region: eu-west-1
+    names: elb-back
+  register: elb_facts
+
+- action:
+    module: debug
+    msg: "{{elb_facts.elbs[0].dns_name}}"
+
+- name: set fact dns_name
+  set_fact:
+    dns_name_back: "{{elb_facts.elbs[0].dns_name}}"
+    cacheable: yes

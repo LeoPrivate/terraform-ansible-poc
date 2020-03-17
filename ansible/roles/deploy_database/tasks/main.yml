@@ -1,0 +1,49 @@
+---
+- name: Install dependencies
+  apt:
+    name:
+      - nodejs
+      - git
+      - npm
+    update_cache: yes 
+    state: latest
+  ignore_errors: yes
+
+- name: Install n package
+  npm: name=n global=yes 
+
+- name: upgrade Node to v12
+  shell: n 12
+
+- name: Git clone repo
+  git:
+    repo: "https://github.com/LeoPrivate/angular-todo-poc.git"
+    dest: "{{gitDirectory}}"
+    update: yes
+    force: yes
+
+
+- name: Install pm2 package
+  npm: name=pm2 global=yes
+
+- name: Create database directory
+  file: path={{databaseDirectory}} state=directory
+
+- name: Move files
+  copy:
+    src:  "{{gitDirectory}}/nodejs-database"
+    dest: "{{databaseDirectory}}"
+    remote_src: yes
+
+- name: Run NPM install
+  npm: path={{databaseDirectory}}/nodejs-database
+
+- name: stop all pm2 process
+  shell: pm2 stop all
+  ignore_errors: true
+  no_log: true
+
+- name: run database pm2
+  shell: pm2 start server.js 
+  args:
+    chdir: "{{databaseDirectory}}/nodejs-database"

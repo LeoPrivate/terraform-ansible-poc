@@ -1,0 +1,64 @@
+---
+
+# BUILD APPLICATION
+
+
+
+- action:
+    module: debug
+    msg: "{{hostvars['localhost']['dns_name_back']}}"
+
+- name: Install dependencies
+  apt:
+    name:
+      - nodejs
+      - git
+      - npm
+      - nginx
+      - curl
+    update_cache: yes 
+    state: latest
+  ignore_errors: yes
+
+- name: Install n package
+  npm: name=n global=yes
+
+- name: upgrade Node to v12
+  shell: n 12
+
+- name: Install angular cli package
+  npm: name=@angular/cli global=yes
+
+- name: Create frontend directory
+  file: path={{frontendDirectory}} state=directory
+
+- name: Git clone repo
+  git:
+    repo: "https://github.com/LeoPrivate/angular-todo-poc.git"
+    dest: "{{gitDirectory}}"
+    update: yes
+    force: yes
+  notify: "setup frontend"
+  register: gitHasChanged
+
+- meta: flush_handlers
+
+# DEPLOY WEBSERVER
+- name: Move configuration nginx
+  copy:
+    src:  "{{gitDirectory}}/nginx/todo.conf"
+    dest: /etc/nginx/conf.d/todo.conf
+    remote_src: yes
+
+- name: Change port number of webserver conf
+  lineinfile:
+    path: /etc/nginx/conf.d/todo.conf
+    regexp: listen 8[0-9] default_server;
+    line: listen 8080 default_server;
+    firstmatch: yes
+
+
+- name: restart nginx
+  service:
+    name: nginx
+    state: restarted

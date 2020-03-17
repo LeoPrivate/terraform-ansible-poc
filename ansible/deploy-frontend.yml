@@ -1,0 +1,5 @@
+- name: Register elb vars
+  hosts: localhost
+
+  roles:
+    - role: "load_elb"

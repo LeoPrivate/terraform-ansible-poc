@@ -1,0 +1,18 @@
+# Port variables
+port:
+  web: 4200
+  backend: 3000
+  database: 5432
+
+
+# Directory variables 
+gitDirectory: /project
+frontendDirectory: /var/www/frontend
+backendDirectory: /var/www/backend
+databaseDirectory: /var/www/database
+
+
+# Number of instance you want to deploy
+nb_instance: 2
+
+dns_name_front: elb-back-49788638.eu-west-1.elb.amazonaws.com
