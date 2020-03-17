@@ -13,3 +13,6 @@ override.tf.json
 
 # prevent from pushing credentials or configuration information to github
 variables.tfvars
+
+# prevent from pushing GCP creds
+key.json
