@@ -30,7 +30,7 @@ module "instances-frontend" {
 resource "google_compute_global_forwarding_rule" "default" {
   name       = "global-rule"
   target     = google_compute_target_http_proxy.default.self_link
-  port_range = "80"
+  port_range = "8080"
 }
 
 resource "google_compute_target_http_proxy" "default" {
@@ -54,7 +54,7 @@ resource "google_compute_url_map" "default" {
     default_service = google_compute_backend_service.default.self_link
 
     path_rule {
-      paths   = ["/*"]
+      paths   = ["/"]
       service = google_compute_backend_service.default.self_link
     }
   }
@@ -82,6 +82,7 @@ resource "google_compute_http_health_check" "default" {
   request_path       = "/"
   check_interval_sec = 1
   timeout_sec        = 1
+  port = 8080
 }
 
 resource "google_compute_instance_group" "eu-ig1" {
@@ -90,6 +91,11 @@ resource "google_compute_instance_group" "eu-ig1" {
   instances = list(module.instances-frontend.self_links[count.index])
 
   zone = var.zones[count.index % length(var.zones)]
+
+  named_port {
+    name = "http"
+    port = "8080"
+  }
 
   count = var.nb_instance
 }
