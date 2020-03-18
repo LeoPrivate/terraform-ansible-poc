@@ -16,7 +16,7 @@ variable "public_subnets" {
 }
 
 variable "nb_instance" {
-  default = 2
+  default = 1
 }
 
 

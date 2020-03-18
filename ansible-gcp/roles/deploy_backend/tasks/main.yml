@@ -1,0 +1,56 @@
+---
+
+- name: Install dependencies
+  apt:
+    name:
+      - nodejs
+      - git
+      - npm
+    update_cache: yes 
+    state: latest
+  ignore_errors: yes
+
+- name: Install n package
+  npm: name=n global=yes 
+
+- name: upgrade Node to v12
+  shell: n 12
+
+- name: Git clone repo
+  git:
+    repo: "https://github.com/LeoPrivate/angular-todo-poc.git"
+    dest: "{{gitDirectory}}"
+    update: yes
+    force: yes
+
+- name: Create backend directory
+  file: path={{backendDirectory}} state=directory
+
+- name: Move files
+  copy:
+    src:  "{{gitDirectory}}/nodejs-backend"
+    dest: "{{backendDirectory}}"
+    remote_src: yes
+
+- name: Run NPM install
+  npm: path={{backendDirectory}}/nodejs-backend
+
+- name: Install pm2 package
+  npm: name=pm2 global=yes
+
+- name: create .env file
+  shell: echo "URL=$URL" > .env && echo "PORTDB=$PORTDB" >> .env && echo "PORT=3000" >> .env
+  environment:
+    URL: "{{hostvars['database-0']['ansible_ssh_host']}}"
+    PORTDB: "5432"
+  args:
+   chdir: "{{backendDirectory}}/nodejs-backend"
+
+- name: stop all pm2 process
+  shell: pm2 stop all
+  ignore_errors: true
+
+- name: run pm2 backend
+  shell: pm2 start server.js 
+  args:
+    chdir: "{{backendDirectory}}/nodejs-backend"

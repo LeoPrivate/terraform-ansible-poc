@@ -1,0 +1,40 @@
+---
+  - name: create .env file
+    shell: echo "URL=$URL" > .env && echo "PORTBACKEND=$PORTBACKEND" >> .env
+    environment:
+      URL: "{{hostvars['backend-0']['ansible_ssh_host']}}"
+      PORTBACKEND: "3000"
+    args:
+     chdir: "{{gitDirectory}}/angular-frontend"
+    listen: setup frontend
+
+  - name: npm install frontend
+    npm: path={{gitDirectory}}/angular-frontend
+    listen: setup frontend
+
+  - name: run npm config
+    shell:  npm run config
+    args:
+     chdir: "{{gitDirectory}}/angular-frontend"
+    listen: setup frontend
+  
+
+  - name: build production folder
+    shell: ng build --prod
+    args:
+     chdir: "{{gitDirectory}}/angular-frontend"
+    listen: setup frontend
+  
+  - name: move production files
+    copy:
+      src:  "{{gitDirectory}}/angular-frontend/dist"
+      dest: /var/www/html/
+      remote_src: yes
+    listen: setup frontend
+
+
+  - name: create frontend html folder
+    file:
+      path: /var/www/html/frontend
+      state: directory
+    listen: setup frontend

@@ -1,0 +1,36 @@
+---
+
+- name: setup ubuntu on all machine
+  hosts: all
+  become: yes
+
+  roles:
+    - role: "setup_ubuntu1804"
+
+#- name: Register elb vars
+#  hosts: localhost
+#  roles:
+#    - role: "load_elb"
+
+- name: install frontend
+  hosts: tag_frontend
+  become: yes
+
+  roles:
+    - role: "deploy_frontend"
+
+
+- name: install backend
+  hosts: tag_backend
+  become: yes
+
+  roles:  
+    - role: "deploy_backend"
+
+
+- name: install database
+  hosts: tag_database
+  become: yes
+
+  roles:
+    - role: "deploy_database"

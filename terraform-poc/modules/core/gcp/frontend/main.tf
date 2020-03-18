@@ -68,13 +68,18 @@ resource "google_compute_backend_service" "default" {
 
   health_checks = [google_compute_http_health_check.default.self_link]
 
-  backend {
-    group = google_compute_instance_group.eu-ig1[0].self_link
-  }
 
+  dynamic "backend" {
+    for_each = google_compute_instance_group.eu-ig1
+
+    content {
+      group = backend.value["self_link"]
+    }
+  }
+/*
   backend {
     group = google_compute_instance_group.eu-ig1[1].self_link
-  }
+  }*/
 }
 
 resource "google_compute_http_health_check" "default" {

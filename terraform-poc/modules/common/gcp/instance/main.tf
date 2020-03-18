@@ -22,6 +22,8 @@ resource "google_compute_instance" "frontend" {
     ssh-keys = "ubuntu:${file("~/.ssh/${var.key_name}.pub")}"
   }
 
+  tags = [var.instance_name]
+
   zone = var.zones[count.index % length(var.zones)]
   count = var.nb_instance
 }
