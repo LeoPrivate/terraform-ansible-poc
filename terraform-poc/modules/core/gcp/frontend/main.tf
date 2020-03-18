@@ -27,13 +27,78 @@ module "instances-frontend" {
   
 }
 
-resource "google_compute_instance_group" "eu-ig1" {
-  name = "eu-ig1"
-
-  instances = module.instances-frontend.self_links
-
-  zone = var.zones[0]
+resource "google_compute_global_forwarding_rule" "default" {
+  name       = "global-rule"
+  target     = google_compute_target_http_proxy.default.self_link
+  port_range = "80"
 }
+
+resource "google_compute_target_http_proxy" "default" {
+  name        = "target-proxy"
+  description = "http proxy for frontend"
+  url_map     = google_compute_url_map.default.self_link
+}
+
+resource "google_compute_url_map" "default" {
+  name            = "url-map-target-proxy"
+  description     = "url for frontend"
+  default_service = google_compute_backend_service.default.self_link
+
+  host_rule {
+    hosts        = module.instances-frontend.instances_ips
+    path_matcher = "allpaths"
+  }
+
+  path_matcher {
+    name            = "allpaths"
+    default_service = google_compute_backend_service.default.self_link
+
+    path_rule {
+      paths   = ["/*"]
+      service = google_compute_backend_service.default.self_link
+    }
+  }
+}
+
+resource "google_compute_backend_service" "default" {
+  name        = "backend"
+  port_name   = "http"
+  protocol    = "HTTP"
+  timeout_sec = 10
+
+  health_checks = [google_compute_http_health_check.default.self_link]
+
+  backend {
+    group = google_compute_instance_group.eu-ig1[0].self_link
+  }
+
+  backend {
+    group = google_compute_instance_group.eu-ig1[1].self_link
+  }
+}
+
+resource "google_compute_http_health_check" "default" {
+  name               = "check-backend"
+  request_path       = "/"
+  check_interval_sec = 1
+  timeout_sec        = 1
+}
+
+resource "google_compute_instance_group" "eu-ig1" {
+  name = "eu-ig-${count.index}"
+
+  instances = list(module.instances-frontend.self_links[count.index])
+
+  zone = var.zones[count.index % length(var.zones)]
+
+  count = var.nb_instance
+}
+
+#### old 
+
+
+/*
+
 
 resource "google_compute_health_check" "my-tcp-health-check" {
   name = "my-tcp-health-check"
@@ -43,15 +108,31 @@ resource "google_compute_health_check" "my-tcp-health-check" {
   }
 }
 
-resource "google_compute_region_backend_service" "my-ext-lb" {
+resource "google_compute_region_backend_service" "backendgroup" {
   name          = "my-ext-lb"
   health_checks = [google_compute_health_check.my-tcp-health-check.self_link]
   region        = var.region
 
   backend {
-    group = google_compute_instance_group.eu-ig1.self_link
+    group = google_compute_instance_group.eu-ig1[0].self_link
+  }
+
+  backend {
+    group = google_compute_instance_group.eu-ig1[1].self_link
   }
 }
+
+module "gce-lb-http" {
+  source = "GoogleCloudPlatform/lb-http/google"
+  name = "webserver"
+  project = var.project
+  target_tags = ["http"]
+  backends =  { 
+    "0" = [
+      {group = "${google_compute_region_backend_service.backendgroup}"}
+    ],
+  }
+}*/
 
 /*
 module "elb_http" {

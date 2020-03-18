@@ -10,3 +10,5 @@ variable "zones" {}
 variable "network_name" {}
 
 variable "region" {}
+
+variable "project" {}

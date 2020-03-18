@@ -30,8 +30,9 @@ module "frontend" {
   key_name = var.key_name
 
   region = var.region
+  project = var.project_id
 }
-
+/*
 
 module "backend" {
   source = "../../../modules/core/gcp/backend"
@@ -57,3 +58,4 @@ module "database" {
   zones = list(var.zone1)
 
 }
+*/
