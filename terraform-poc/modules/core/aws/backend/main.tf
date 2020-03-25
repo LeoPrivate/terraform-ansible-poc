@@ -5,10 +5,10 @@
 #}
 
 module "sg-backend" {
-  source = "../../../common/aws/security_group"
-  name = "open_backend"
+  source      = "../../../common/aws/security_group"
+  name        = "open_backend"
   description = "Allow traffic on 3000"
-  vpc_id = var.vpc_id
+  vpc_id      = var.vpc_id
 
   ingress_rules = [
     {
@@ -16,12 +16,12 @@ module "sg-backend" {
       to_port     = 3000
       protocol    = "tcp"
       cidr_blocks = ["0.0.0.0/0"]
-    }, {
+      }, {
       from_port   = 80
       to_port     = 80
       protocol    = "tcp"
       cidr_blocks = ["0.0.0.0/0"]
-    }, {
+      }, {
       from_port   = 22
       to_port     = 22
       protocol    = "tcp"
@@ -34,7 +34,7 @@ module "sg-backend" {
       to_port     = 0
       protocol    = "-1"
       cidr_blocks = ["0.0.0.0/0"]
-    }]
+  }]
 }
 
 module "instances-backend" {

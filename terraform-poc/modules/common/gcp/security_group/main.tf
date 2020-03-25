@@ -1,7 +1,7 @@
 
 
 resource "google_compute_firewall" "firewall_gcp" {
-  name = var.name
+  name    = var.name
   network = var.network_name
 
   allow {
@@ -13,8 +13,8 @@ resource "google_compute_firewall" "firewall_gcp" {
 
     content {
       protocol = allow.value["protocol"]
-      ports =  allow.value["port"]
-      
+      ports    = allow.value["port"]
+
     }
   }
 }

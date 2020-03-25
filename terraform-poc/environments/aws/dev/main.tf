@@ -16,8 +16,8 @@ module "frontend" {
 
   public_subnets_id = module.network.public_subnets_id
   nb_instance       = var.nb_instance
-  key_name = var.key_name_front
-  vpc_id = module.network.vpc_id
+  key_name          = var.key_name_front
+  vpc_id            = module.network.vpc_id
 
 }
 
@@ -26,8 +26,8 @@ module "backend" {
 
   private_subnets_id = module.network.public_subnets_id
   nb_instance        = var.nb_instance
-  key_name = var.key_name_front
-  vpc_id = module.network.vpc_id
+  key_name           = var.key_name_front
+  vpc_id             = module.network.vpc_id
 
   public_subnets_cidr = "${var.public_subnets}"
 }

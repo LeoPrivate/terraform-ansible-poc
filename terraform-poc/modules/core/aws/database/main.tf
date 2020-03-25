@@ -7,10 +7,10 @@
 
 
 module "sg-database" {
-  source = "../../../common/aws/security_group"
-  name = "open_database"
+  source      = "../../../common/aws/security_group"
+  name        = "open_database"
   description = "Allow traffic on 5432"
-  vpc_id = var.vpc_id
+  vpc_id      = var.vpc_id
 
   ingress_rules = [
     {
@@ -18,7 +18,7 @@ module "sg-database" {
       to_port     = 5432
       protocol    = "tcp"
       cidr_blocks = ["0.0.0.0/0"]
-    }, {
+      }, {
       from_port   = 22
       to_port     = 22
       protocol    = "tcp"
@@ -31,7 +31,7 @@ module "sg-database" {
       to_port     = 0
       protocol    = "-1"
       cidr_blocks = ["0.0.0.0/0"]
-    }]
+  }]
 }
 
 module "instance-database" {

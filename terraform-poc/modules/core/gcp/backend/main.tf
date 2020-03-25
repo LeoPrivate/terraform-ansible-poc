@@ -1,14 +1,14 @@
 module "sg-backend" {
-  source = "../../../common/gcp/security_group"
-  name = "open-backend"
+  source       = "../../../common/gcp/security_group"
+  name         = "open-backend"
   network_name = var.network_name
 
   ingress_rules = [
     {
       protocol    = "tcp"
-      port = ["80", "22", "3000"]
+      port        = ["80", "22", "3000"]
       cidr_blocks = ["0.0.0.0/0"]
-    }]
+  }]
 }
 
 
@@ -17,12 +17,12 @@ module "instances-backend" {
   source        = "../../../common/gcp/instance"
   instance_name = "backend"
 
-  subnets_name  = var.private_subnets_name
-  nb_instance = var.nb_instance
-  key_name = var.key_name
+  subnets_name = var.private_subnets_name
+  nb_instance  = var.nb_instance
+  key_name     = var.key_name
 
   zones = var.zones
-  
+
 }
 /*
 module "elb_back" {

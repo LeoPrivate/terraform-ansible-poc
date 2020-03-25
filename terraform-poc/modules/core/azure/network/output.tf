@@ -9,10 +9,10 @@ output "subnets_id" {
 
 ## NOT DEFINED HERE IN AZURE
 
- output "public_subnets_id" {
-   value = list(module.vnet.vnet_subnets[0], module.vnet.vnet_subnets[1])
- }
+output "public_subnets_id" {
+  value = list(module.vnet.vnet_subnets[0], module.vnet.vnet_subnets[1])
+}
 
- output "private_subnets_id" {
-   value = list(module.vnet.vnet_subnets[2], module.vnet.vnet_subnets[3])
- }
+output "private_subnets_id" {
+  value = list(module.vnet.vnet_subnets[2], module.vnet.vnet_subnets[3])
+}

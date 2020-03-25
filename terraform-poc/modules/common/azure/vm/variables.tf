@@ -8,7 +8,6 @@ variable "subnets_id" {}
 
 variable "nb_instance" {}
 
-variable "sg_id" {}
 variable "key_name" {}
 
 variable "resource_group_name" {}

@@ -3,6 +3,6 @@ output instances_ids {
 }
 
 ## TODO ??
-output instances_ips {
-  value = azurerm_virtual_machine.frontend.*.public_ip
-}
+#output instances_ips {
+#  value = azurerm_virtual_machine.frontend.*.public_ip
+#}

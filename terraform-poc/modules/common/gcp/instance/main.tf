@@ -10,7 +10,7 @@ resource "google_compute_instance" "frontend" {
   }
 
   network_interface {
-    network = "vpc-poc-iac-gcp"
+    network    = "vpc-poc-iac-gcp"
     subnetwork = var.subnets_name[count.index]
 
     access_config {
@@ -24,6 +24,6 @@ resource "google_compute_instance" "frontend" {
 
   tags = [var.instance_name]
 
-  zone = var.zones[count.index % length(var.zones)]
+  zone  = var.zones[count.index % length(var.zones)]
   count = var.nb_instance
 }

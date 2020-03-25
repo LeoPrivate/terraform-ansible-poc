@@ -1,16 +1,16 @@
 
 
 module "sg-frontend" {
-  source = "../../../common/gcp/security_group"
-  name = "open-website"
+  source       = "../../../common/gcp/security_group"
+  name         = "open-website"
   network_name = var.network_name
 
   ingress_rules = [
     {
       protocol    = "tcp"
-      port = ["80", "22", "8080"]
+      port        = ["80", "22", "8080"]
       cidr_blocks = ["0.0.0.0/0"]
-    }]
+  }]
 }
 
 
@@ -19,12 +19,12 @@ module "instances-frontend" {
   source        = "../../../common/gcp/instance"
   instance_name = "frontend"
 
-  subnets_name  = var.public_subnets_name
-  nb_instance = var.nb_instance
-  key_name = var.key_name
+  subnets_name = var.public_subnets_name
+  nb_instance  = var.nb_instance
+  key_name     = var.key_name
 
   zones = var.zones
-  
+
 }
 
 resource "google_compute_global_forwarding_rule" "default" {
@@ -76,7 +76,7 @@ resource "google_compute_backend_service" "default" {
       group = backend.value["self_link"]
     }
   }
-/*
+  /*
   backend {
     group = google_compute_instance_group.eu-ig1[1].self_link
   }*/
@@ -87,7 +87,7 @@ resource "google_compute_http_health_check" "default" {
   request_path       = "/"
   check_interval_sec = 1
   timeout_sec        = 1
-  port = 8080
+  port               = 8080
 }
 
 resource "google_compute_instance_group" "eu-ig1" {
