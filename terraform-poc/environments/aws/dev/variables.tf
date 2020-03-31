@@ -20,3 +20,11 @@ variable "key_name_back" {
 variable "environment_name" {
   default = "env"
 }
+
+variable "region" {
+  default = "eu-west-1"
+}
+
+variable "workspace" {
+  default = ""
+}

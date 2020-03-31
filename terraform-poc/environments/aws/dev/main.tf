@@ -1,5 +1,20 @@
+
+
 provider "aws" {
-  region = "eu-west-1"
+  region = var.region
+}
+
+data "aws_region" "current" {}
+
+terraform {
+    backend "s3" {
+        encrypt = true
+        bucket = "terraform-remote-state-storage-nexworld"
+        region = "eu-west-1"
+        key = "dev/aws/terraform.tfstate"
+
+        dynamodb_table = "lock-terraform-remote-storage"
+    }
 }
 
 module "network" {
